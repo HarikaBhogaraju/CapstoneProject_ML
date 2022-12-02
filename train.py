@@ -70,11 +70,11 @@ def file_name(folder):
 
 def train_main():
     #for SA and AZ images
-    CleanAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_CleanBlobs') #Training
-    CleanSA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_CleanBlobs') #80% for training, 20% for testing
+    CleanAZ = load_images_from_folder('/datasets/AZ_CleanBlobs') #Training
+    CleanSA = load_images_from_folder('/datasets/SA_CleanBlobs') #80% for training, 20% for testing
 
-    DirtyAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_DirtyBlobs') #Training
-    DirtySA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_DirtyBlobs') #80% for training, 20% for testing
+    DirtyAZ = load_images_from_folder('/datasets/AZ_DirtyBlobs') #Training
+    DirtySA = load_images_from_folder('/datasets/SA_DirtyBlobs') #80% for training, 20% for testing
 
     lenD = len(DirtySA)
     lenC = len(CleanSA)
