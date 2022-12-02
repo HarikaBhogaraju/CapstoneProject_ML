@@ -63,86 +63,87 @@ def file_name(folder):
         file_name.append(filename)
     return file_name
 
-#for SA and AZ images
-CleanAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_CleanBlobs') #Training
-CleanSA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_CleanBlobs') #80% for training, 20% for testing
+def setData():
+    #for SA and AZ images
+    CleanAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_CleanBlobs') #Training
+    CleanSA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_CleanBlobs') #80% for training, 20% for testing
 
-DirtyAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_DirtyBlobs') #Training
-DirtySA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_DirtyBlobs') #80% for training, 20% for testing
+    DirtyAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_DirtyBlobs') #Training
+    DirtySA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_DirtyBlobs') #80% for training, 20% for testing
 
-lenD = len(DirtySA)
-lenC = len(CleanSA)
+    lenD = len(DirtySA)
+    lenC = len(CleanSA)
 
-trainLenD = int(0.8*lenD)
-trainLenC = int(0.8*lenC)
+    trainLenD = int(0.8*lenD)
+    trainLenC = int(0.8*lenC)
 
-for i in range(trainLenD):
-  TrainDirty.append(DirtySA[i]) #80% of DirtySA dataset
-for i in range(trainLenD,lenD):
-  TestDirty.append(DirtySA[i]) #20% of DirtySA datset
+    for i in range(trainLenD):
+      TrainDirty.append(DirtySA[i]) #80% of DirtySA dataset
+    for i in range(trainLenD,lenD):
+      TestDirty.append(DirtySA[i]) #20% of DirtySA datset
 
-for i in range(trainLenC):
-  TrainClean.append(CleanSA[i]) #80% of CleanSA dataset
-for i in range(trainLenC,lenC):
-  TestClean.append(CleanSA[i]) #20% of CleanSA datset
+    for i in range(trainLenC):
+      TrainClean.append(CleanSA[i]) #80% of CleanSA dataset
+    for i in range(trainLenC,lenC):
+      TestClean.append(CleanSA[i]) #20% of CleanSA datset
 
-lenD = len(DirtyAZ)
-lenC = len(CleanAZ)
-for i in range(lenD):
-  TrainDirty.append(DirtyAZ[i])
-for i in range(lenC):
-  TrainClean.append(CleanAZ[i])
+    lenD = len(DirtyAZ)
+    lenC = len(CleanAZ)
+    for i in range(lenD):
+      TrainDirty.append(DirtyAZ[i])
+    for i in range(lenC):
+      TrainClean.append(CleanAZ[i])
 
-print(len(TrainDirty))
-print(len(TrainClean))
-print(len(TestClean))
-print(len(TestDirty))
+    print(len(TrainDirty))
+    print(len(TrainClean))
+    print(len(TestClean))
+    print(len(TestDirty))
 
 
-#class balance
-Clean_u_idx = np.random.choice(np.array([i for i in range(len(TrainClean))]), len(TrainDirty), replace=False)
-Clean_u = [TrainClean[i] for i in Clean_u_idx]
+    #class balance
+    Clean_u_idx = np.random.choice(np.array([i for i in range(len(TrainClean))]), len(TrainDirty), replace=False)
+    Clean_u = [TrainClean[i] for i in Clean_u_idx]
 
-dataset = TrainDirty + Clean_u
-dataset_c = extract_image_center(dataset, hcrop=40/2, wcrop=40/2)
-labels = [0 for i in range(len(TrainDirty))]+[1 for i in range(len(Clean_u))]
+    dataset = TrainDirty + Clean_u
+    dataset_c = extract_image_center(dataset, hcrop=40/2, wcrop=40/2)
+    labels = [0 for i in range(len(TrainDirty))]+[1 for i in range(len(Clean_u))]
 
-# del Dirty
-# del Clean
-Counter(labels)
+    # del Dirty
+    # del Clean
+    Counter(labels)
 
-plt.subplot(3,2,1)
-plt.imshow(dataset_c[0])
-plt.subplot(3,2,2)
-plt.imshow(dataset[0])
+    plt.subplot(3,2,1)
+    plt.imshow(dataset_c[0])
+    plt.subplot(3,2,2)
+    plt.imshow(dataset[0])
 
-plt.subplot(3,2,3)
-plt.imshow(dataset_c[-1])
-plt.subplot(3,2,4)
-plt.imshow(dataset[-1])
+    plt.subplot(3,2,3)
+    plt.imshow(dataset_c[-1])
+    plt.subplot(3,2,4)
+    plt.imshow(dataset[-1])
 
-plt.subplot(3,2,5)
-plt.imshow(dataset_c[-10])
-plt.subplot(3,2,6)
-plt.imshow(dataset[-10])
+    plt.subplot(3,2,5)
+    plt.imshow(dataset_c[-10])
+    plt.subplot(3,2,6)
+    plt.imshow(dataset[-10])
 
-#randomize the list to ensure batches get mix of clean and dirty images
-import random
-mapIndexPosition = list(zip(dataset_c, labels))
-random.shuffle(mapIndexPosition)
-# make list separate
-images, labels = zip(*mapIndexPosition)
-Counter(labels)
+    #randomize the list to ensure batches get mix of clean and dirty images
+    import random
+    mapIndexPosition = list(zip(dataset_c, labels))
+    random.shuffle(mapIndexPosition)
+    # make list separate
+    images, labels = zip(*mapIndexPosition)
+    Counter(labels)
 
-from sklearn.model_selection import train_test_split
+    from sklearn.model_selection import train_test_split
 
-x_train, x_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
-x_train = np.array(x_train).astype('float32')
-x_test = np.array(x_test).astype('float32')
+    x_train, x_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
+    x_train = np.array(x_train).astype('float32')
+    x_test = np.array(x_test).astype('float32')
 
-X_TRAIN = x_train
-X_TEST = x_test
-Y_TRAIN = y_train
-Y_TEST = y_test
+    X_TRAIN = x_train
+    X_TEST = x_test
+    Y_TRAIN = y_train
+    Y_TEST = y_test
 
-print(Counter(y_train), Counter(y_test), x_train.shape)
+    print(Counter(y_train), Counter(y_test), x_train.shape)
