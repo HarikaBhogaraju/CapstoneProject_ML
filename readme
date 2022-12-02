@@ -1,0 +1,26 @@
+General description of project
+
+1. pip install -r requirements.txt:
+This file contains all the necessary dependencies to run the model. Use the above
+command to install all the dependencies. This step cannot be skipped.
+
+2. python setup.py:
+This file reads from the datasets folder which contains the datasets for the
+ML model's training and testing. If the datasets folder is altered, make sure
+to change setup.py accordingly so that the training and testing datasets are
+accurately changed.
+
+3. python train.py:
+This file reads the datasets from setup.py and then build and trains a model.
+The file saves a .h5 file of the model which can be used later. Once this file
+is generated, you need not run it again unless you would like to retrain the
+model on different data.
+
+4. python run.py:
+This file finally uses the saved model from train.py to classify the test
+dataset. If you would like to alter just the test data, you can do so in set up
+and then simply run this file again to view the model performance
+
+5. driver file
+main -train
+main -test
