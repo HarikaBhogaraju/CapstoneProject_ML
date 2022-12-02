@@ -8,13 +8,8 @@ collected from a microflip and identifies if the sample contains pathogens or no
 classifying it as Clean or Dirty.
 
 
-1. make setup:
-This command downloads all the necessary dependencies and sets up the datasets 
-for the model from the datasets folder.
+1. python main.py --run Train:
+This command will train and save a model
 
-2. make train:
-This command will train an XGBoost model with the datasets and save a trained model
-as a .h5 file.
-
-3. make test:
-This command will use the saved model and run it on the test dataset.
+2. python main.py --run Test:
+This command will use the saved model and run the test data from the datasets folder
