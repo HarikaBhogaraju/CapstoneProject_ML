@@ -7,9 +7,13 @@ code details the ML model and its functioning. The ML model reads water sample i
 collected from a microflip and identifies if the sample contains pathogens or not by
 classifying it as Clean or Dirty.
 
+Setup Environment:
+pip install -r requirements.txt
 
-1. python main.py --run Train:
-This command will train and save a model
+Train:
+python main.py --run Train --trainingData filepath:
+This command will train and save a model. You can use "./datasets/TrainingDataset" for filepath
 
-2. python main.py --run Test:
-This command will use the saved model and run the test data from the datasets folder
+Test:
+python main.py --run Test:
+This command will use the saved model and run the test data from the datasets folder. You can use "./datasets/TestingDataset" for filepath.
