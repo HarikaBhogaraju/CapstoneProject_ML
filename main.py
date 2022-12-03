@@ -7,20 +7,21 @@ import test
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--run', type=str, default='Test')
+parser.add_argument('--trainingdata', type=str, default="./datasets/TrainingDataset/")
+parser.add_argument('--testingdata', type=str, default="./datasets/TestingDataset/")
 # parse the arguments
 args = parser.parse_args()
 
 def main():
 	if(args.run == 'Train'):
-		print("Setting up")
-		setup.setData()
 		print("Training")
-		train.train_main()
+		pathData = args.trainingdata
+		train.train_main(pathData)
+
 	if(args.run == 'Test'):
-		print("Setting up")
-		setup.setData()
 		print("Testing")
-		test.test_main()
+		pathData = args.testingdata
+		test.test_main(pathData)
 
 if __name__ == "__main__":
     main()
