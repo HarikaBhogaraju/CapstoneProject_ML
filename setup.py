@@ -21,6 +21,9 @@ from tensorflow.keras.optimizers import Adam, SGD, RMSprop
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg19 import VGG19
 from tensorflow.keras.applications.resnet50 import ResNet50
+import random
+from sklearn.model_selection import train_test_split
+from PIL import Image
 
 X_TRAIN = []
 X_TEST = []
@@ -66,19 +69,24 @@ def file_name(folder):
 def setData():
     #for SA and AZ images
     CleanAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_CleanBlobs') #Training
+    #
     CleanSA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_CleanBlobs') #80% for training, 20% for testing
-
+    #
     DirtyAZ = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/AZ_DirtyBlobs') #Training
+    #
     DirtySA = load_images_from_folder('/Users/harikabhogaraju/CSE486_ML/capstone/datasets/SA_DirtyBlobs') #80% for training, 20% for testing
+    #
 
     lenD = len(DirtySA)
     lenC = len(CleanSA)
 
     trainLenD = int(0.8*lenD)
     trainLenC = int(0.8*lenC)
-
+    print("SA Train Dirty: ",trainLenD)
+    print("SA Train Clean: ",trainLenC)
     for i in range(trainLenD):
       TrainDirty.append(DirtySA[i]) #80% of DirtySA dataset
+
     for i in range(trainLenD,lenD):
       TestDirty.append(DirtySA[i]) #20% of DirtySA datset
 
@@ -89,6 +97,8 @@ def setData():
 
     lenD = len(DirtyAZ)
     lenC = len(CleanAZ)
+    print("AZ Train Dirty: ",lenD)
+    print("AZ Train Clean: ",lenC)
     for i in range(lenD):
       TrainDirty.append(DirtyAZ[i])
     for i in range(lenC):
@@ -98,13 +108,15 @@ def setData():
     print(len(TrainClean))
     print(len(TestClean))
     print(len(TestDirty))
+    count = 0
 
-
+#TRAINING DATA
     #class balance
     Clean_u_idx = np.random.choice(np.array([i for i in range(len(TrainClean))]), len(TrainDirty), replace=False)
     Clean_u = [TrainClean[i] for i in Clean_u_idx]
 
     dataset = TrainDirty + Clean_u
+
     dataset_c = extract_image_center(dataset, hcrop=40/2, wcrop=40/2)
     labels = [0 for i in range(len(TrainDirty))]+[1 for i in range(len(Clean_u))]
 
@@ -112,38 +124,36 @@ def setData():
     # del Clean
     Counter(labels)
 
-    plt.subplot(3,2,1)
-    plt.imshow(dataset_c[0])
-    plt.subplot(3,2,2)
-    plt.imshow(dataset[0])
-
-    plt.subplot(3,2,3)
-    plt.imshow(dataset_c[-1])
-    plt.subplot(3,2,4)
-    plt.imshow(dataset[-1])
-
-    plt.subplot(3,2,5)
-    plt.imshow(dataset_c[-10])
-    plt.subplot(3,2,6)
-    plt.imshow(dataset[-10])
-
     #randomize the list to ensure batches get mix of clean and dirty images
-    import random
     mapIndexPosition = list(zip(dataset_c, labels))
     random.shuffle(mapIndexPosition)
     # make list separate
     images, labels = zip(*mapIndexPosition)
+
+
     Counter(labels)
 
-    from sklearn.model_selection import train_test_split
+#TESTING
+    #class balance
+    #Clean_u_idx = np.random.choice(np.array([i for i in range(len(TestClean))]), len(TestDirty), replace=False)
+    #Clean_u = [TestClean[i] for i in Clean_u_idx]
+    count = 0
+    dataset = TestDirty + TestClean
 
-    x_train, x_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
-    x_train = np.array(x_train).astype('float32')
-    x_test = np.array(x_test).astype('float32')
+    dataset_c = extract_image_center(dataset, hcrop=40/2, wcrop=40/2)
 
-    X_TRAIN = x_train
-    X_TEST = x_test
-    Y_TRAIN = y_train
-    Y_TEST = y_test
 
-    print(Counter(y_train), Counter(y_test), x_train.shape)
+    labels_test = [0 for i in range(len(TestDirty))]+[1 for i in range(len(Clean_u))]
+
+    # del Dirty
+    # del Clean
+    Counter(labels)
+
+    #randomize the list to ensure batches get mix of clean and dirty images
+    mapIndexPosition = list(zip(dataset_c, labels_test))
+    random.shuffle(mapIndexPosition)
+    # make list separate
+    images_test, labels_test = zip(*mapIndexPosition)
+    Counter(labels_test)
+
+setData()
